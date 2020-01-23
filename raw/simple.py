@@ -28,7 +28,7 @@ input_blob = next(iter(net.inputs))
 exec_net = plugin.load_network(net, DEVICE)
 
 # Load Image
-cap = cv2.VideoCapture(1)
+cap = cv2.VideoCapture(0)
 
 font = cv2.FONT_HERSHEY_SIMPLEX
 fontscale = 0.5

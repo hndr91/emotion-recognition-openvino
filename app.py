@@ -4,7 +4,7 @@ import numpy as np
 from inference import Network
 import constants
 
-CPU_EXTENSION = "/opt/intel/openvino/deployment_tools/inference_engine/lib/intel64/libcpu_extension_sse4.so"
+# CPU_EXTENSION = "/opt/intel/openvino/deployment_tools/inference_engine/lib/intel64/libcpu_extension_sse4.so"
 
 def get_args():
     '''
@@ -31,7 +31,7 @@ def get_args():
 
 def detect_faces(frame, cascade_model):
     #convert frame to gray image
-    gray = cv2.cv2Color(frame, cv2.COLOR_BGR2GRAY)
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     # get faces
     faces = cascade_model.detectMultiScale(gray, 1.1, 4)
 
@@ -86,7 +86,7 @@ def infer_on_video(args):
     cap = cv2.VideoCapture(0)
     
     # Process frames until process is exited
-    while cap.isOpened():
+    while True:
         # Read the next frame
         flag, frame = cap.read()
         if not flag:
@@ -112,14 +112,18 @@ def infer_on_video(args):
             if plugin.wait() == 0:
                 result = plugin.extract_output()
             
-            result = result["prop_emotion"]
+            # result = result["prop_emotion"]
+            print(result)
 
             #draw box on faces
             draw_bounding_box(frame, x, y, w, h, constants.BOX_COLOR, constants.BOX_THICKNESS)
 
             # Draw emotion to frames
             draw_emotion(frame, result, constants.FONT, constants.FONT_SCALE, constants.FONT_COLOR, constants.THICKNESS, width)
-            
+
+        #Show Frame
+        cv2.imshow('Emotion Recognition', frame)
+
         # Break if escape key pressed
         key_pressed = cv2.waitKey(30) & 0xff
         if key_pressed == 27:
