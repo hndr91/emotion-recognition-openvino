@@ -1,17 +1,23 @@
 ## Emotion Recognition Using OpenVINO Toolkit
-*Only code in raw folder that tested for now*
+Emotion recognitoion based on pretrained model from OpenVINO `emotion-recognition-retail-003`.
 
 ### Dependencies
-1. OpenVINO toolkit
-2. OpenCV 4.x.x
-3. Numpy
+1. Python 3.7
+2. OpenVINO toolkit
+3. OpenCV 4.x.x
+4. Numpy
+
+## How to Use
+
+```
+python app.py -m "pretrained model path" -c "opencv haar cascade model"
+```
 
 ### Hadwawere
-By default this code use MYRIAD
+By default this code use MYRIAD. CPU and GPU support will be updated soon.
 
 ### TODOs
 
-1. Test newer code
-2. Support multiple hardware
-3. Support video input
-4. Detect only main face
+1. Support multiple hardware
+2. Support video input
+3. Detect only main face
