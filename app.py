@@ -33,9 +33,16 @@ def detect_faces(frame, cascade_model):
     #convert frame to gray image
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     # get faces
-    faces = cascade_model.detectMultiScale(gray, 1.1, 4)
+    faces = cascade_model.detectMultiScale(image=gray, scaleFactor=1.1, minNeighbors=4, minSize=(200,200))
 
-    return faces
+    if type(faces) is not tuple:
+        w = []
+        for i in range(faces.shape[0]):
+            w.append(faces[i][2])
+            main_face = np.where(faces == max(w))
+            index = main_face[0][0]
+            face = faces[index]
+            return (face[0], face[1], face[2], face[3]) #return main face x,y,w,h
 
 def preprocessing(frame, frame_size=64):
     # model format
@@ -96,11 +103,11 @@ def infer_on_video(args):
         # Get frame's width
         _, width = frame.shape[:2]
 
-        # Detect Faces
-        faces = detect_faces(frame, cascade_model)
+        # Detect Main Face Only
+        face = detect_faces(frame, cascade_model)
+        if face:
+            (x, y, w, h) = face
 
-        # Get Emotion
-        for (x, y, w, h) in faces:
             # get face in color based on face detection
             face = frame[y:y+h, x:x+w]
             p_frame = preprocessing(face)
@@ -113,14 +120,14 @@ def infer_on_video(args):
                 result = plugin.extract_output()
             
             # result = result["prop_emotion"]
-            print(result)
+            # print(result)
 
             #draw box on faces
             draw_bounding_box(frame, x, y, w, h, constants.BOX_COLOR, constants.BOX_THICKNESS)
 
             # Draw emotion to frames
             draw_emotion(frame, result, constants.FONT, constants.FONT_SCALE, constants.FONT_COLOR, constants.THICKNESS, width)
-
+        
         #Show Frame
         cv2.imshow('Emotion Recognition', frame)
 
