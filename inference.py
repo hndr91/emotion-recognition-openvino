@@ -23,6 +23,17 @@ class Network:
         self.exec_network = None
         self.infer_request = None
 
+    # def hetero_devices(self, ie, device_type=None):
+    #     '''
+    #     List all supported devices
+    #     '''
+    #     devices = ie.available_devices
+
+    #     if "ALL" in device_type:
+    #         return ','.join(devices)
+    #     elif "HETERO" in device_type:
+    #         hetero = [d for d in devices if "MYRIAD" in d]
+    #         return ','.join(hetero)
 
     def load_model(self, model, device="MYRIAD", cpu_extension=None):
         '''
@@ -44,10 +55,13 @@ class Network:
         self.network = IENetwork(model=model_xml, weights=model_bin)
 
         # Load the IENetwork into the plugin
-        if "MULTI" in device:
-            self.exec_network = self.plugin.load_network(self.network, "MULTI:MYRIAD.1.1-ma2480,MYRIAD.1.3-ma2480")
-        elif "HETERO" in device:
-            self.exec_network = self.plugin.load_network(self.network, "HETERO:MYRIAD.1.1-ma2480,MYRIAD.1.3-ma2480")
+        if "HETERO" in device:
+            devices = self.plugin.available_devices
+            devices = [d for d in devices if "MYRIAD" in d]
+            devices = ','.join(devices)
+            devices = 'HETERO:' + devices
+
+            self.exec_network = self.plugin.load_network(self.network, devices)
         else:
             self.exec_network = self.plugin.load_network(self.network, device)
 
