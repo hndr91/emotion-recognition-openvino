@@ -13,7 +13,7 @@ def get_args():
     parser = argparse.ArgumentParser("Run inference on an input video")
     # -- Create the descriptions for the commands
     m_desc = "The location of the model XML file"
-    d_desc = "Use `MULTI` for multi MYRIAD. Default device is MYRIAD"
+    d_desc = "Use `MULTI` for multi MYRIAD or `HETERO` for heterogeneous.  Default device is MYRIAD"
     c_desc = "The location of The OpenCV Cascade Haar model"
 
     # -- Add required and optional groups

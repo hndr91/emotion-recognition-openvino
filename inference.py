@@ -46,6 +46,8 @@ class Network:
         # Load the IENetwork into the plugin
         if "MULTI" in device:
             self.exec_network = self.plugin.load_network(self.network, "MULTI:MYRIAD.1.1-ma2480,MYRIAD.1.3-ma2480")
+        elif "HETERO" in device:
+            self.exec_network = self.plugin.load_network(self.network, "HETERO:MYRIAD.1.1-ma2480,MYRIAD.1.3-ma2480")
         else:
             self.exec_network = self.plugin.load_network(self.network, device)
 
