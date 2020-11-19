@@ -24,7 +24,7 @@ class Network:
         self.infer_request = None
 
 
-    def load_model(self, model, device="MYRIAD", cpu_extension=None):
+    def load_model(self, model, device="CPU", cpu_extension=None):
         '''
         Load the model given IR files.
         Defaults to CPU as device for use in the workspace.
@@ -44,10 +44,10 @@ class Network:
         self.network = IENetwork(model=model_xml, weights=model_bin)
 
         # Load the IENetwork into the plugin
-        if "MULTI" in device:
-            self.exec_network = self.plugin.load_network(self.network, "MULTI:MYRIAD.1.1-ma2480,MYRIAD.1.3-ma2480")
-        else:
-            self.exec_network = self.plugin.load_network(self.network, device)
+        # if "MULTI" in device:
+        #     self.exec_network = self.plugin.load_network(self.network, "MULTI:MYRIAD.1.1-ma2480,MYRIAD.1.3-ma2480")
+        # else:
+        #     self.exec_network = self.plugin.load_network(self.network, device)
 
         # Get the input layer
         self.input_blob = next(iter(self.network.inputs))
