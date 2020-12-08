@@ -2,6 +2,17 @@ import cv2
 import numpy as np
 import constants
 
+import paho.mqtt.client as mqtt
+
+def connect_mqtt():
+    '''
+        Connect to mqtt broker
+    '''
+    client = mqtt.Client()
+    client.connect(constants.MQTT_HOST, constants.MQTT_PORT, constants.MQTT_KEEPALIVE_INTERVAL)
+
+    return client
+
 def preprocessing(frame, input_shape):
     # model format
     n, c, h, w = input_shape
@@ -33,6 +44,16 @@ def main_face(coords):
             index = main_face[0][0] # get the first biggest face
             face = coords[index]
         return (face[0], face[1], face[2], face[3]) #return main face x,y,w,h
+
+
+def get_emotion(result):
+    neutral = float("{:.2f}".format(result[0][0][0][0]))
+    happy = float("{:.2f}".format(result[0][1][0][0]))
+    sad = float("{:.2f}".format(result[0][2][0][0]))
+    surprise = float("{:.2f}".format(result[0][3][0][0]))
+    anger = float("{:.2f}".format(result[0][4][0][0]))
+
+    return (neutral, happy, sad, surprise, anger)
 
 def draw_emotion(frame, result, font, font_scale, font_color, thickness, width):
     org_y = 15

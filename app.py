@@ -1,11 +1,15 @@
 import argparse
 import cv2
 import numpy as np
-from utils import preprocessing, get_face_coordinates, main_face, draw_bounding_box, draw_emotion, draw_fps_time
+from utils import preprocessing, get_face_coordinates, main_face, draw_bounding_box, draw_emotion, draw_fps_time, connect_mqtt, get_emotion
 from inference import Network
 import constants
 from imutils.video import FPS
 import time
+
+import sys
+import logging as log
+import json
 
 def get_args():
     '''
@@ -32,7 +36,7 @@ def get_args():
 
     return args
 
-def infer_on_video(args):
+def infer_on_video(args, client):
     
     # Initialize the Inference Engine
     face_detect_plugin = Network()
@@ -92,6 +96,18 @@ def infer_on_video(args):
             if emot_detect_plugin.wait() == 0:
                 emot_result = emot_detect_plugin.extract_output()
 
+            # Get emotion prediction
+            neutral, happy, sad, surprise, anger = get_emotion(emot_result)
+            
+            # Publish to MQTT Server
+            client.publish(constants.MQTT_TOPIC1, json.dumps({
+                "neutral" : neutral,
+                "happy" : happy,
+                "sad" : sad,
+                "surprise" : surprise,
+                "anger" : anger
+            }))
+
             # Draw emotion to frames
             draw_emotion(frame, emot_result, constants.FONT, constants.FONT_SCALE, constants.FONT_COLOR, constants.THICKNESS, frame_width)
         
@@ -116,7 +132,8 @@ def infer_on_video(args):
 
 def main():
     args = get_args()
-    infer_on_video(args)
+    client = connect_mqtt()
+    infer_on_video(args, client)
 
 
 if __name__ == "__main__":

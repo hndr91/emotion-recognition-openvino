@@ -1,0 +1,24 @@
+{
+  "name": "emotion-detection-server",
+  "version": "1.0.0",
+  "description": "MQTT broker server for emotion detection",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hndr91/emotion-recognition-openvino.git"
+  },
+  "author": "Afif Hendrawan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hndr91/emotion-recognition-openvino/issues"
+  },
+  "homepage": "https://github.com/hndr91/emotion-recognition-openvino#readme",
+  "dependencies": {
+    "mosca": "^2.8.3",
+    "uuid4": "^1.0.0",
+    "jsonschema": "1.2.6"
+  }
+}
